@@ -1,1 +1,1 @@
-# HOTH7-firebase-workshop
+# Introduction to Firestore (at HOTH7)
