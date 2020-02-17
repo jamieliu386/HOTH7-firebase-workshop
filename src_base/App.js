@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import Meme from './Meme.js';
-import firebase from './lib/firebase.js';
 
 class App extends React.Component {
   constructor(props){
@@ -13,31 +12,8 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount = () => {
-    this.db = firebase.firestore();
-    this.unsubscribe = this.db.collection("memes")
-      .onSnapshot((querySnapshot) => {
-        let memeList = [];
-        querySnapshot.forEach(function(doc){
-          let meme = doc.data();
-          let newMeme = {
-            name: meme.name,
-            imgURL: meme.imgURL
-          }
-          memeList.push(newMeme);
-        });
-        this.setState({
-          memes: memeList,
-        });
-    });
-  }
-
-  componentWillUnmount = () => {
-    this.unsubscribe();
-  }
-
   handleNameChange = e => {
-    this.setState({name: e.target.value});
+    this.setState({name: e.target.value });
   }
 
   handleURLChange = e => {
@@ -48,22 +24,16 @@ class App extends React.Component {
     if (this.state.name.length === 0 || this.state.imgURL.length === 0) {
       return;
     }
-
     let newMeme = {
       name: this.state.name,
       imgURL: this.state.imgURL
     };
     let newMemes = this.state.memes;
-
     newMemes.push(newMeme);
-    this.setState({memes: newMemes});
-
-    this.db.collection("memes").add(newMeme)
-    .then(function(docRef) {
-      console.log("Document written with ID: ", docRef.id);
-    })
-    .catch(function(error) {
-      console.error("Error adding document: ", error);
+    this.setState({
+      memes: newMemes, 
+      // name: "", 
+      // imgURL: ""
     });
   }
 
@@ -71,7 +41,6 @@ class App extends React.Component {
     if (this.state.memes.length === 0) {
       return (<div className="no-memes">No memes for sick AF tweens D:</div>)
     }
-
     let memes = [];
     this.state.memes.forEach((meme, index) => {
       memes.push(
