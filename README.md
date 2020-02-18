@@ -27,17 +27,17 @@ Now open the project folder in your text editor. Navigate to the `src` folder
 and replace the code in the following files with the code in the corresponding
 link:
 
-`App.js`: [code](src_base/App.js)
+`App.js`: [code](web-start/src/App.js)
 
-`App.css`: [code](src_base/App.css)
+`App.css`: [code](web-start/src/App.css)
 
-`index.css`: [code](src_base/index.css)
+`index.css`: [code](web-start/src/index.css)
 
 In addition, create two new files in the `src` directory and copy the linked code into them:
 
-`Meme.js`: [code](src_base/Meme.js)
+`Meme.js`: [code](web-start/src/Meme.js)
 
-`Meme.css`: [code](src_base/Meme.css)
+`Meme.css`: [code](web-start/src/Meme.css)
 
 Make sure to save all of your changes! Then you should see something that looks
 like this:
@@ -156,29 +156,42 @@ to it. First, we need to import the firebase file we made earlier. In the
 import firebase from "./lib/firebase.js";
 ```
 
-Next, copy the following code and paste it before the `handleNameChange` method:
+Next, copy the following code and paste it into the `listenForMemes` method:
 
 ```js
-componentDidMount = () => {
+// Set up event listener for changes to "memes" collection
+listenForMemes = () => {
 	this.db = firebase.firestore();
-	this.unsubscribe = this.db.collection("memes").onSnapshot((querySnapshot) => {
-		let memeList = [];
-		querySnapshot.forEach(function(doc) {
-			let meme = doc.data();
-			let newMeme = {
-				name: meme.name,
-				imgURL: meme.imgURL,
-			};
-			memeList.push(newMeme);
-		});
-		this.setState({
-			memes: memeList,
-		});
-	});
-};
 
+	this.unsubscribeFromMemes = this.db
+		.collection("memes")
+		.onSnapshot((querySnapshot) => {
+			let memeList = [];
+
+			// Parse each document into our memeList
+			querySnapshot.forEach(function(doc) {
+				let meme = doc.data();
+				let newMeme = {
+					name: meme.name,
+					imgURL: meme.imgURL,
+				};
+				memeList.push(newMeme);
+			});
+
+			// Update data with our new memeList
+			this.setState({
+				memes: memeList,
+			});
+		});
+};
+```
+
+Additionally, add the following code into the `componentWillUnmount` method:
+
+```js
 componentWillUnmount = () => {
-	this.unsubscribe();
+	// Stop listening for changes to "memes" collection
+	this.unsubscribeFromMemes();
 };
 ```
 
@@ -205,7 +218,7 @@ this.unsubscribe = this.db.collection("memes")
     });
 ```
 
-Here, we are using `onSnapshot` to listen for changes to the "memes" collection.
+Here, we are using `onSnapshot` method provided by firebase to listen for changes to the "memes" collection.
 Each time a document is added, changed, or removed from the collection, we
 recieve a query snapshot. This snapshot captures the current contents, and is
 updated every time the contents change.
@@ -249,47 +262,22 @@ it! However, we also want to be able to add memes to our database using our app.
 We'll do this by modifying the `sendMeme` method, making it also send the meme
 data to the database.
 
-Let's replace the current `sendMeme` implementation with the following:
+Let's replace the current `updateMemeCollection` implementation with the following:
 
 ```js
-sendMeme = () => {
-	if (this.state.name.length === 0 || this.state.imgURL.length === 0) {
-		return;
-	}
-
-	let newMeme = {
-		name: this.state.name,
-		imgURL: this.state.imgURL,
-	};
-	let newMemes = this.state.memes;
-
-	newMemes.push(newMeme);
-	this.setState({ memes: newMemes });
-
-	sendMeme = () => {
-		if (this.state.name.length === 0 || this.state.imgURL.length === 0) {
-			return;
-		}
-
-		let newMeme = {
-			name: this.state.name,
-			imgURL: this.state.imgURL,
-		};
-		let newMemes = this.state.memes;
-
-		newMemes.push(newMeme);
-		this.setState({ memes: newMemes });
-
-		this.db
-			.collection("memes")
-			.add(newMeme)
-			.then(function(docRef) {
-				console.log("Document written with ID: ", docRef.id);
-			})
-			.catch(function(error) {
-				console.error("Error adding document: ", error);
-			});
-	};
+// Add a document containing new meme information to "memes" collection
+updateMemeCollection = (newMeme) => {
+	this.db
+		.collection("memes")
+		.add(newMeme)
+		.then(function(docRef) {
+			// Successful update
+			console.log("Document written with ID: ", docRef.id);
+		})
+		.catch(function(error) {
+			// Error updating database
+			console.error("Error adding document: ", error);
+		});
 };
 ```
 
