@@ -88,7 +88,7 @@ and "Initialize Firebase" comments, and paste it into the `firebase.js` file.
 Now modify the file to look like this (the config part should be from the code
 you copied, not exactly the same as below!):
 
-``` javascript
+``` js
 import firebase from 'firebase';
 
 const config = {
@@ -142,3 +142,168 @@ that I want displayed](https://i.redd.it/f322t7u6sih41.jpg).
 
 ## Using the Database in the App
 
+Our final step will be to make our app use the database, and listen for changes
+to it. First, we need to import the firebase file we made earlier. In the
+`App.js` file, add the following line:
+``` js
+import firebase from './lib/firebase.js';
+```
+
+Next, copy the following code and paste it before the `handleNameChange` method:
+
+``` js
+componentDidMount = () => {
+    this.db = firebase.firestore();
+    this.unsubscribe = this.db.collection("memes")
+        .onSnapshot((querySnapshot) => {
+        let memeList = [];
+        querySnapshot.forEach(function(doc){
+            let meme = doc.data();
+            let newMeme = {
+            name: meme.name,
+            imgURL: meme.imgURL
+            }
+            memeList.push(newMeme);
+        });
+        this.setState({
+            memes: memeList,
+        });
+    });
+}
+
+componentWillUnmount = () => {
+    this.unsubscribe();
+}
+```
+
+Woah. What exactly is going on here? The answer is: a lot, but we'll go through
+it step by step.
+
+First of all, what is `componentDidMount`? This is some React stuff, and I
+encourage you to look it up if you're making a React app. For the sake of this
+workshop, basically the code in `componentDidMount` runs when the component/app
+is first opened. Similarly, the code in `componentWillUnmount` gets run right
+before the component/app is closed by the user.
+
+``` js
+this.db = firebase.firestore();
+```
+
+This line creates a reference to our database, allowing us to access it using
+`this.db`.
+
+``` js 
+this.unsubscribe = this.db.collection("memes")
+    .onSnapshot((querySnapshot) => {
+        ...
+    });
+```
+
+Here, we are using `onSnapshot` to listen for changes to the "memes" collection.
+Each time a document is added, changed, or removed from the collection, we 
+recieve a query snapshot. This snapshot captures the current contents, and is
+updated every time the contents change. 
+
+In addition, `onSnapshot` returns a method that allows us to detach the
+listener (i.e. stop listening). Thus, we can call this method in 
+`componentWillUnmount` to detach the listener. 
+
+Every time our query snapshot gets changed, the function inside of the 
+`onSnapshot()` method gets called. Let's take a clsoer look at our function:
+
+``` js
+(querySnapshot) => {
+        let memeList = [];
+        querySnapshot.forEach(function(doc){
+          let meme = doc.data();
+          let newMeme = {
+            name: meme.name,
+            imgURL: meme.imgURL
+          }
+          memeList.push(newMeme);
+        });
+        this.setState({
+          memes: memeList,
+        });
+    }
+```
+
+Here, we do some stuff with the snapshot data. First, we create a new empty 
+array called `memeList`. Then, we use `forEach` to do something with each 
+doc inside our "memes" collection snapshot. We first use the `.data()` method
+to obtain the doc's data, and store this in `meme`. Then we create an object
+called `newMeme`, and give it the necessary information. Finally, we push 
+this meme into the `memeList` array. 
+
+After the loop is finished, we use `setState` to change the state of our app to
+the new `memeList` array that we created.
+
+This is enough to allow our app to retrieve data from the database and display
+it! However, we also want to be able to add memes to our database using our app.
+We'll do this by modifying the `sendMeme` method, making it also send the meme
+data to the database.
+
+Let's replace the current `sendMeme` implementation with the following:
+
+``` js
+sendMeme = () => {
+    if (this.state.name.length === 0 || this.state.imgURL.length === 0) {
+        return;
+    }
+
+    let newMeme = {
+        name: this.state.name,
+        imgURL: this.state.imgURL
+    };
+    let newMemes = this.state.memes;
+
+    newMemes.push(newMeme);
+    this.setState({memes: newMemes});
+
+      sendMeme = () => {
+    if (this.state.name.length === 0 || this.state.imgURL.length === 0) {
+      return;
+    }
+
+    let newMeme = {
+      name: this.state.name,
+      imgURL: this.state.imgURL
+    };
+    let newMemes = this.state.memes;
+
+    newMemes.push(newMeme);
+    this.setState({memes: newMemes});
+
+    this.db.collection("memes").add(newMeme)
+    .then(function(docRef) {
+      console.log("Document written with ID: ", docRef.id);
+    })
+    .catch(function(error) {
+      console.error("Error adding document: ", error);
+    });
+  }
+}
+```
+
+Make sure to save the changes, and now let's try adding a meme to the app! If
+we refresh the page, the meme we added should still be there!! Pretty neat.
+
+Let's take a closer look at the portion of code that we added:
+
+``` js
+this.db.collection("memes").add(newMeme)
+.then(function(docRef) {
+    console.log("Document written with ID: ", docRef.id);
+})
+.catch(function(error) {
+    console.error("Error adding document: ", error);
+});
+```
+
+First, we see that we're using the `this.db` reference to our database, and
+we're accessing the "memes" collection within it. We're calling the `add` method
+on this collection, with the `newMeme` object we created. This is what creates 
+a doc in the database for our new meme.
+
+What about the `.then` and `.catch` parts? Basically, if the `add` succeeds, the
+`.then` code gets executed, but if it doesn't, the `.catch` code executes. 
