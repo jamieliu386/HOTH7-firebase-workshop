@@ -1,17 +1,17 @@
-.meme-container{
-    padding: 1em;
-    margin: 1em;
-    border: 1px solid black;
-    border-radius: 5px;
-    height: calc(30vh);
-    display: row;
-    background-color: white;
-  }
-  
-  .meme-text{
-    padding-bottom: .5em;
-  }
-  
-  .meme-image{
-    height: calc(30vh - 2em);
-  }
+.meme-container {
+	padding: 1em;
+	margin: 1em;
+	border: 1px solid black;
+	border-radius: 5px;
+	height: 30vh;
+	display: row;
+	background-color: white;
+}
+
+.meme-text {
+	padding-bottom: 0.5em;
+}
+
+.meme-image {
+	height: calc(30vh - 2em);
+}
