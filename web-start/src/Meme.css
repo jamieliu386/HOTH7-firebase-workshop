@@ -3,7 +3,7 @@
 	margin: 1em;
 	border: 1px solid black;
 	border-radius: 5px;
-	height: calc(30vh);
+	height: 30vh;
 	display: row;
 	background-color: white;
 }
