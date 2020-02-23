@@ -32,7 +32,7 @@
 - [Why Firestore?](#why-firestore)
 - [Firestore Data Model](#understanding-the-firestore-data-model)
 - Demo App: Integrate with React
-  - [Setup](#before-we-get-started)
+  - [Setup](#demonstration-integrating-firestore-with-a-react-app)
   - [Creating Firebase Project with Firestore](#creating-a-firebase-project)
   - [Using Firestore in Web App](#using-the-database-in-the-app)
 
