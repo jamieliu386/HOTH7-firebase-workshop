@@ -2,9 +2,7 @@
 
 ## Resources
 
-<!-- TODO: View only link to slides -->
-
-- [**Workshop Slides**]()
+- [**Workshop Slides**](https://tinyurl.com/hoth7-fire-slides)
 
 **Firebase Documentation**
 
@@ -64,9 +62,7 @@ integrate into your application. Usually, databases require a middleman
 called a "server" which handles requests from an application to fetch the
 specified data stored in the database.
 
-<!-- TODO: Image of server to client communication -->
-
-[IMAGE]
+![](images/client_server_communication.png)
 
 Firestore **ELIMINATES the need for server development**, hence why we say that
 using Firestore lets us go "Serverless." While in reality, there still is a
@@ -122,9 +118,7 @@ Every document in your database is identified by some unique name within its
 collection. Each document stores a set of data in the form of **key-value pairs,**
 which might look something like this:
 
-<!-- TODO: Screenshot of example Firestore database structure -->
-
-[IMAGE]
+![](images/firebase_model_example.png)
 
 Each piece of data is labeled by a field name or **key**, and this key identifies
 what the **value** it maps to represents.
