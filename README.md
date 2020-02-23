@@ -36,6 +36,12 @@
   - [Creating Firebase Project with Firestore](#creating-a-firebase-project)
   - [Using Firestore in Web App](#using-the-database-in-the-app)
 
+## Before We Get Started
+
+Make sure you have [Node](https://nodejs.org/) and [Git](https://git-scm.com/downloads)
+installed, as well as a text editor of your choice (we will be using
+[Visual Studio Code](https://code.visualstudio.com/))
+
 ## Firestore... But First, Databases!
 
 Before we get into using Firestore, let's understand the service that it
@@ -129,14 +135,6 @@ deeper I encourage you to look at the Firestore
 
 # Demonstration: Integrating Firestore with a React App
 
-## Before We Get Started
-
-Make sure you have [Node](https://nodejs.org/) installed, as well as a text
-editor of your choice (we will be using
-[Visual Studio Code](https://code.visualstudio.com/))
-
-<!-- Choose one to get rid of or we can keep both, they should both work fine -->
-
 ## Setting Up the Project: Cloning Our Repository
 
 Open up your terminal application (Terminal on MacOS, Powershell on Windows)
@@ -151,50 +149,6 @@ $ npm start
 ```
 
 You should see something that looks like this pop up in your browser:
-
-![](images/base_app.png)
-
-Try adding some memes to the page! Wow, memes are great. But oh no... when we
-refresh the page, all of our precious memes disappear!! :0 :c
-
-In order to make a meme page that actually stores and displays all the memes
-we submitted, we'll need some sort of database. Enter... Firebase!!
-
-## Setting Up the Project: Create React App
-
-Open up your terminal application (Terminal on MacOS, Powershell on Windows)
-and execute the following commands. (Note: the "\$" character is not part of
-the command).
-
-```
-$ npx create-react-app meme-app
-$ cd meme-app
-$ npm install firebase --save
-$ npm start
-```
-
-You should see something like this in your browser:
-
-![](images/default_app.png)
-
-Now open the project folder in your text editor. Navigate to the `src` folder
-and replace the code in the following files with the code in the corresponding
-link:
-
-`App.js`: [code](web-start/src/App.js)
-
-`App.css`: [code](web-start/src/App.css)
-
-`index.css`: [code](web-start/src/index.css)
-
-In addition, create two new files in the `src` directory and copy the linked code into them:
-
-`Meme.js`: [code](web-start/src/Meme.js)
-
-`Meme.css`: [code](web-start/src/Meme.css)
-
-Make sure to save all of your changes! Then you should see something that looks
-like this:
 
 ![](images/base_app.png)
 
