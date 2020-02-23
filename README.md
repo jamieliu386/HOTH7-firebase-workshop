@@ -142,7 +142,7 @@ and execute the following commands in a directory of your choice. (Note: the
 "\$" character is not part of the command).
 
 ```
-$ git clone [URL] meme-app
+$ git clone https://github.com/jamieliu386/HOTH7-firebase-workshop.git meme-app
 $ cd meme-app/web-start
 $ npm install firebase --save
 $ npm start
